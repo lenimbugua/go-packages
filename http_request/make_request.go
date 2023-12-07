@@ -11,6 +11,16 @@ import (
 
 type requestHeaders map[string]string
 
+type Request struct {
+	Ctx             context.Context
+	Client          *http.Client
+	Method          string
+	Url             string
+	Body            io.Reader
+	Headers         requestHeaders
+	TimeoutDuration time.Duration
+}
+
 /*
   MakeHTTPRequest creates a new request,
   Sets request headers if any,
@@ -18,28 +28,29 @@ type requestHeaders map[string]string
   Finaly returns the response.
 */
 
-func MakeHTTPRequest(ctx context.Context, client *http.Client, httpMethod string, url string, body io.Reader, headers requestHeaders, timeoutDuration time.Duration) ([]byte, error) {
+func MakeHTTPRequest(req Request) ([]byte, error) {
 	// Validate HTTP method
-	if !isValidHTTPMethod(httpMethod) {
-		return nil, fmt.Errorf("invalid HTTP method: %s", httpMethod)
+	if !isValidHTTPMethod(req.Method) {
+		return nil, fmt.Errorf("invalid HTTP method: %s", req.Method)
 	}
 
 	// Create a new request.
-	request, err := http.NewRequest(httpMethod, url, body)
+	request, err := http.NewRequest(req.Method, req.Url, req.Body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %v", err)
 	}
 
 	// Validate and set request headers
-	if err := validateAndSetHeaders(request, headers); err != nil {
+	if err := validateAndSetHeaders(request, req.Headers); err != nil {
 		return nil, err
 	}
 
 	// Use context for the request
-	request = request.WithContext(ctx)
+	request = request.WithContext(req.Ctx)
 
 	// Make request with timeout
-	client.Timeout = timeoutDuration 
+	client := req.Client
+	client.Timeout = req.TimeoutDuration
 	response, err := client.Do(request)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %v", err)
