@@ -3,17 +3,21 @@ package http_request
 import (
 	"io"
 	"net/http"
-
-	"github.com/rs/zerolog"
 )
 
-type Headers map[string]string
+type requestHeaders map[string]string
 
-func MakeHTTPRequest(client *http.Client, logger *zerolog.Logger, httpMethod string, url string, body io.Reader, headers Headers) ([]byte, error) {
+/*
+  MakeHTTPRequest creates a new request,
+  Sets request headers if any,
+  Sends the request, and
+  Finaly returns the response
+*/
+
+func MakeHTTPRequest(client *http.Client, httpMethod string, url string, body io.Reader, headers requestHeaders) ([]byte, error) {
 	//Create a new request.
 	request, err := http.NewRequest(httpMethod, url, body)
 	if err != nil {
-		logger.Error().Err(err).Msg("Could not create new request")
 		return nil, err
 	}
 
@@ -25,24 +29,23 @@ func MakeHTTPRequest(client *http.Client, logger *zerolog.Logger, httpMethod str
 	//Make request
 	response, err := client.Do(request)
 	if err != nil {
-		logger.Error().Err(err).Msg("Could not send request")
 		return nil, err
 	}
 
 	// Close response body
-	defer func() {
+	defer func() error {
 		if response.Body != nil {
 			err := response.Body.Close()
 			if err != nil {
-				logger.Error().Err(err).Msg("Could not close body stream")
+				return err
 			}
 		}
+		return nil
 	}()
 
 	// Read the response body
 	res, err := io.ReadAll(response.Body)
 	if err != nil {
-		logger.Error().Err(err).Msg("Could read response body")
 		return nil, err
 	}
 	return res, nil
