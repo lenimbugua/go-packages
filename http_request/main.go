@@ -1,4 +1,4 @@
-package simple_http_request
+package http_request
 
 import (
 	"io"
