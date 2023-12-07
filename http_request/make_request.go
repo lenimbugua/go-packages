@@ -27,7 +27,6 @@ type Request struct {
   Sends the request, and
   Finaly returns the response.
 */
-
 func MakeHTTPRequest(req Request) ([]byte, error) {
 	// Validate HTTP method
 	if !isValidHTTPMethod(req.Method) {
