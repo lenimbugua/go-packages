@@ -1,4 +1,4 @@
-module github.com/lenimbugua/utils
+module github.com/lenimbugua/go-utils-packages
 
 go 1.21.3
 
