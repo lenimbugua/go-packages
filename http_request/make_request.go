@@ -22,12 +22,12 @@ type Request struct {
 }
 
 /*
-  MakeHTTPRequest creates a new request,
-  Sets request headers if any,
-  Sends the request, and
-  Finaly returns the response.
+MakeHTTPRequest creates a new request,
+Sets request headers if any,
+Sends the request, and
+Finaly returns the response.
 */
-func MakeHTTPRequest(req Request) ([]byte, error) {
+func MakeHTTPRequest(req Request) (*http.Response, error) {
 	// Validate HTTP method
 	if !isValidHTTPMethod(req.Method) {
 		return nil, fmt.Errorf("invalid HTTP method: %s", req.Method)
@@ -63,13 +63,7 @@ func MakeHTTPRequest(req Request) ([]byte, error) {
 		}
 	}()
 
-	// Read the response body
-	res, err := io.ReadAll(response.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %v", err)
-	}
-
-	return res, nil
+	return response, nil
 }
 
 func isValidHTTPMethod(method string) bool {
