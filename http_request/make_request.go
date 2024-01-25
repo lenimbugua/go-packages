@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"time"
 )
@@ -54,14 +53,14 @@ func MakeHTTPRequest(req Request) (*http.Response, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %v", err)
 	}
-	defer func() {
-		if response.Body != nil {
-			err := response.Body.Close()
-			if err != nil {
-				log.Printf("failed to close response body: %v", err)
-			}
-		}
-	}()
+	// defer func() {
+	// 	if response.Body != nil {
+	// 		err := response.Body.Close()
+	// 		if err != nil {
+	// 			log.Printf("failed to close response body: %v", err)
+	// 		}
+	// 	}
+	// }()
 
 	return response, nil
 }
