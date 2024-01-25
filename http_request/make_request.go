@@ -97,7 +97,7 @@ func MakeHTTPRequest(req Request) (*http.Response, error) {
 	if err != nil {
 		return nil, RequestError{Err: err}
 	}
-	
+
 	return response, nil
 }
 
@@ -136,7 +136,7 @@ func validateAndSetHeaders(request *http.Request, headers requestHeaders) error 
 			return fmt.Errorf("invalid header: %s=%s", key, value)
 		}
 		escapedValue := url.QueryEscape(value)
-		request.Header.Add(http.CanonicalHeaderKey(key), escapedValue)
+		request.Header.Add(key, escapedValue)
 	}
 	return nil
 }
