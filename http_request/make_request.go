@@ -97,7 +97,7 @@ func MakeHTTPRequest(req Request) (*http.Response, error) {
 	if err != nil {
 		return nil, RequestError{Err: err}
 	}
-
+	
 	return response, nil
 }
 
