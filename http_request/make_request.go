@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -23,7 +22,6 @@ type Request struct {
 	TimeoutDuration time.Duration
 }
 
-
 // MakeHTTPRequest makes an HTTP request using the provided request object.
 // It validates the HTTP method, creates a new request, sets the headers, uses a context for the request,
 // and makes the request with a timeout.
@@ -34,7 +32,6 @@ type Request struct {
 // Outputs:
 //   response (*http.Response): A pointer to the HTTP response object.
 //   err (error): An error, if any occurred during the request.
-	
 
 // Custom error types
 type InvalidHTTPMethodError struct {
@@ -100,10 +97,9 @@ func MakeHTTPRequest(req Request) (*http.Response, error) {
 	if err != nil {
 		return nil, RequestError{Err: err}
 	}
-	
+
 	return response, nil
 }
-
 
 // isValidHTTPMethod checks if the given HTTP method is valid.
 //
